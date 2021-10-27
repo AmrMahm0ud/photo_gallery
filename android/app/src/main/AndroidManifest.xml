@@ -5,7 +5,7 @@
    <application
         android:label="flutter_gallery"
         android:icon="@mipmap/ic_launcher">
-       android:requestLegacyExternalStorage="true"
+        android:requestLegacyExternalStorage="true"
        <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
