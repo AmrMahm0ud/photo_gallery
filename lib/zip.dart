@@ -15,7 +15,7 @@ class Zip {
       file = await getFile(_mediumList[i]);
       filesList.add(file);
     }
-    Directory directory = await createFolderInAppDocDir("image_folder");
+    await createFolderInAppDocDir("image_folder");
     return filesList;
   }
 
@@ -27,22 +27,21 @@ class Zip {
     final Directory? _appDocDir = await getExternalStorageDirectory();
     Directory directory = await Directory(_appDocDir!.path + '/' + folderName)
         .create(recursive: false);
-    await createCopyOfFilesToRootDir(filesList, _mediumList, directory);
+    await createCopyOfFilesToRootDir(directory);
     return directory;
   }
 
-  Future createCopyOfFilesToRootDir(List<File> filesList,
-      List<Medium> mediumList, Directory directory) async {
+  Future createCopyOfFilesToRootDir(Directory directory) async {
     final Directory? appDataDir = await getExternalStorageDirectory();
     for (int i = 0; i < filesList.length; i++) {
       File file = await filesList[i]
-          .copy("${appDataDir!.path}/image_folder/${mediumList[i].filename}");
+          .copy("${appDataDir!.path}/image_folder/${_mediumList[i].filename}");
       file.createSync(recursive: false);
     }
     int counter = 0;
-    filesList.forEach((element) {
+    for (var element in filesList) {
       counter += element.lengthSync();
-    });
+    }
     print("size before zipping ${counter / (1024 * 1024)}");
     await createZipFileFromDir(directory);
   }
@@ -50,21 +49,28 @@ class Zip {
   Future createZipFileFromDir(Directory directory) async {
     final Directory? dir = await getExternalStorageDirectory();
     File zipFile = File("${dir!.path}/zip_file.zip");
+    print("directory Lenght ${directory.listSync()}");
     try {
       await ZipFile.createFromDirectory(
-          sourceDir: directory,
-          zipFile: zipFile,
-          includeBaseDirectory: true,
-          onZipping: (fileName, isDirectory, progress) {
-            print('Zip #1:');
-            print('progress: ${progress.toStringAsFixed(1)}%');
-            print('name: $fileName');
-            print('isDirectory: $isDirectory');
-            return ZipFileOperation.includeItem;
-          });
+        sourceDir: directory,
+        zipFile: zipFile,
+        includeBaseDirectory: true,
+        // onZipping: (fileName, isDirectory, progress) {
+        //   print('Zip #1:');
+        //   print('progress: ${progress.toStringAsFixed(1)}%');
+        //   print('name: $fileName');
+        //   print('isDirectory: $isDirectory');
+        //   return ZipFileOperation.includeItem;
+        // });
+      );
       print(" File Size after zip ${zipFile.lengthSync() / (1024 * 1024)}");
     } catch (e) {
       print(e);
     }
+    await zipFile.delete();
+    filesList = [];
+    _mediumList = [];
+    Directory ddir = Directory(directory.path);
+    await ddir.delete(recursive: true);
   }
 }

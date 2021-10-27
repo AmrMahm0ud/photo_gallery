@@ -69,6 +69,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             onTap: () async {
                               mediumList = await Gallery()
                                   .getListOfMedium(index, imageAlbums);
+                              print(mediumList.length);
                               Zip().changeFromMediumToFile(mediumList);
                               setState(() {});
                             },
