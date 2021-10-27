@@ -67,24 +67,4 @@ class Zip {
       print(e);
     }
   }
-
-// final Directory? dir = await getExternalStorageDirectory();
-// File file = File("${dir!.path}/zip_file.zip");
-// print(sourceDir);
-// try {
-// await ZipFile.createFromDirectory(
-// sourceDir: sourceDir,
-// zipFile: file,
-// includeBaseDirectory: true,
-// onZipping: (fileName, isDirectory, progress) {
-// print('Zip #1:');
-// print('progress: ${progress.toStringAsFixed(1)}%');
-// print('name: $fileName');
-// print('isDirectory: $isDirectory');
-// return ZipFileOperation.includeItem;
-// });
-// print(" File Size after zip ${file.lengthSync() / (1024 * 1024)}");
-// } catch (e) {
-// print(e);
-// }
 }
